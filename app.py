@@ -54,7 +54,8 @@ uploaded_file = st.file_uploader(
 
 # Load YOLO model
 try:
-    model = YOLO('C:\\Users\\yj428\\OneDrive\\Desktop\\ALPD\\best.pt')  # Update path if needed
+     model = YOLO("best.pt")
+  # Update path if needed
 except Exception as e:
     st.error(f"Error loading YOLO model: {e}")
 
@@ -185,4 +186,5 @@ if uploaded_file:
             st.info(f"🕒 Timestamp: {timestamp}")
     else:
         st.warning("⚠️ No license plate detected.")
+
 
