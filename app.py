@@ -9,10 +9,13 @@ import re
 from collections import Counter
 from datetime import datetime
 import subprocess
+import tempfile
+os.environ['EASYOCR_MODULE_PATH'] = tempfile.gettempdir()
 
 # OCR setup
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-reader = easyocr.Reader(['en'], gpu=False)
+reader = easyocr.Reader(['en'], gpu=False, download_enabled=True)
+
 
 # UI setup
 st.set_page_config(page_title="YOLO License Plate Detector", layout="centered", page_icon="🚘")
@@ -182,3 +185,4 @@ if uploaded_file:
             st.info(f"🕒 Timestamp: {timestamp}")
     else:
         st.warning("⚠️ No license plate detected.")
+
