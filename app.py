@@ -11,6 +11,15 @@ from datetime import datetime
 import subprocess
 import tempfile
 os.environ['EASYOCR_MODULE_PATH'] = tempfile.gettempdir()
+import os
+import subprocess
+
+# Ensure ffmpeg is installed (for Streamlit Cloud)
+try:
+    subprocess.run(["ffmpeg", "-version"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+except Exception:
+    os.system("apt-get update -y && apt-get install -y ffmpeg")
+
 
 # OCR setup
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -187,6 +196,7 @@ if uploaded_file:
             st.info(f"🕒 Timestamp: {timestamp}")
     else:
         st.warning("⚠️ No license plate detected.")
+
 
 
 
