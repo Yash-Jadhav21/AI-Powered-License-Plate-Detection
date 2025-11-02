@@ -145,7 +145,8 @@ def predict_and_plot_video(video_path, output_path):
 
     out.release()
 
-    ffmpeg_path = r'C:\Users\\yj428\\Downloads\\ffmpeg-7.1.1-essentials_build\\ffmpeg-7.1.1-essentials_build\\bin\\ffmpeg.exe'
+    ffmpeg_path = "ffmpeg"
+
     subprocess.run([ffmpeg_path,'-y','-i',temp_output,'-vcodec','libx264','-acodec','aac',output_path], check=False)
 
     if all_texts:
@@ -186,5 +187,6 @@ if uploaded_file:
             st.info(f"🕒 Timestamp: {timestamp}")
     else:
         st.warning("⚠️ No license plate detected.")
+
 
 
