@@ -123,23 +123,49 @@ def predict_and_plot_video(video_path, output_path):
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    temp_output = "temp/temp_raw_output.mp4"
+
+    temp_dir = os.path.abspath("temp")
+    os.makedirs(temp_dir, exist_ok=True)
+
+    temp_output = os.path.join(temp_dir, "temp_raw_output.mp4")
     out = cv2.VideoWriter(temp_output, fourcc, fps, (frame_width, frame_height))
 
     all_texts = []
-    frame_boxes = []
 
     while cap.isOpened():
         ret, frame = cap.read()
-        if not ret: break
+        if not ret:
+            break
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = model.predict(rgb_frame, device='cpu')
-
         for result in results:
             for box in result.boxes:
-                frame_boxes.append((frame.copy(), box))
-
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                plate_img = frame[y1:y2, x1:x2]
+                text = extract_text_from_image(plate_img)
+                if text:
+                    all_texts.append(text)
+        out.write(frame)
     cap.release()
+    out.release()
+
+    # Use ffmpeg only if available
+    ffmpeg_path = "ffmpeg"
+    try:
+        subprocess.run([
+            ffmpeg_path, '-y', '-i', temp_output,
+            '-vcodec', 'libx264', '-acodec', 'aac', output_path
+        ], check=True)
+    except Exception as e:
+        st.warning(f"⚠️ FFmpeg conversion skipped: {e}")
+        output_path = temp_output  # fallback to raw output
+
+    if all_texts:
+        most_common_text, _ = Counter(all_texts).most_common(1)[0]
+        return output_path, [most_common_text]
+    else:
+        return output_path, []
 
     for frame, box in frame_boxes:
         x1, y1, x2, y2 = map(int, box.xyxy[0])
@@ -196,6 +222,7 @@ if uploaded_file:
             st.info(f"🕒 Timestamp: {timestamp}")
     else:
         st.warning("⚠️ No license plate detected.")
+
 
 
 
