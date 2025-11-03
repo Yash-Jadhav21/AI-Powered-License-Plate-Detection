@@ -7,3 +7,5 @@ torchvision
 Pillow
 dill
 ffmpeg-python
+
+pytesseract
