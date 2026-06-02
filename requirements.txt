@@ -1,8 +1,7 @@
 streamlit
 ultralytics
 easyocr
-opencv-python-headless
-torch
+opencv-python-headless==4.10.0.84torch
 torchvision
 Pillow
 dill
