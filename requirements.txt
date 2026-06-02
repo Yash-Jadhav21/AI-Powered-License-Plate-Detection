@@ -1,10 +1,10 @@
 streamlit
 ultralytics
 easyocr
-opencv-python-headless==4.10.0.84torch
+opencv-python-headless==4.10.0.84
+torch
 torchvision
 Pillow
 dill
 ffmpeg-python
-
 pytesseract
